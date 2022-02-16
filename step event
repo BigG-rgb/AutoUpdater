@@ -1,0 +1,48 @@
+if (updateCheck)
+{
+  if (downloading)
+  {
+    if(dl_update(downloadid)==2) //receive updates and check if we have finished downloading
+    {
+      //if we have finished downloading...
+      downloading=false;
+      dl_free(downloadid);    //free download data
+      if (md5file(_temp+"\"+ds_list_find_value(updatedFileList,fileNum))!=ds_list_find_value(updatedHashList,fileNum))
+      {
+        show_message("Failed to retrieve the latest file version. Please try again later, or visit our site at www.stick-online.com");
+        downloading=false;
+        game_end();
+        exit;
+      }
+      fileNum+=1;
+      if (fileNum<ds_list_size(updatedFileList))
+      {
+        //start next...
+        downloadid=dl_begin(PATCH_SERVER+ds_list_find_value(updatedFileList,fileNum),
+          _temp+"\"+ds_list_find_value(updatedFileList,fileNum));
+        if (!downloadid)
+        {
+          show_message("Unable to connect to patch server");
+          downloading=false;
+          game_end();
+          exit;
+        }
+        else
+        {
+          downloading=true;
+        }
+      }
+      else
+      {
+        update_finish();
+      }
+    }
+  }
+  else
+  {
+    with (Start)
+    {
+      event_perform(ev_other,ev_user1);
+    }
+  }
+}
