@@ -1,0 +1,14 @@
+draw_set_color(c_white);
+if ((AUTOUPDATE) && (!CAN_HOST))
+{
+  if (!updateCheck)
+  {
+    draw_text(10,5,"Checking for updates...");
+  }
+  else if (fileNum<ds_list_size(updatedFileList))
+  {
+    draw_text(10,5,ds_list_find_value(updatedFileList,fileNum));
+    draw_text(10,25,string(dl_getparameter(downloadid,"BytesReceived"))+"/"+
+      string(dl_getparameter(downloadid, "Content-Length")));
+  }
+}
