@@ -1,0 +1,4 @@
+with (Start)
+event_perform(ev_other,ev_user1);
+//updateCheck=false;
+//alarm[0]=1;
