@@ -1,0 +1,58 @@
+if ((!AUTOUPDATE) && (!CAN_HOST))
+{
+  show_message("The auto updater is currently disabled");
+  downloading=false;
+  updateCheck=true;
+  exit;
+}
+if (CAN_HOST)
+{
+  downloading=false;
+  exit;
+}
+if ((string_count("stickonline.exe",string_lower(parameter_string(0)))!=1)
+  && (!CAN_HOST))
+{
+  show_message("StickOnline.exe was not found or is invalid. See www.stick-online.com for more info.");
+  downloading=false;
+  game_end();
+  exit;
+}
+update_start();
+updateCheck=true;
+_temp=string_copy(temp_directory,1,string_pos("gm_ttt_",temp_directory)-2);
+registry_set_root(0);
+if (registry_exists_ext("\Software\Stick Online","Updated"))
+{
+  justUpdated=registry_read_string_ext("\Software\Stick Online","Updated");
+}
+else
+{
+  justUpdated="";
+}
+registry_write_string_ext("\Software\Stick Online","Updated","");
+fileNum=0;
+if (ds_list_size(updatedFileList)>0)
+{
+  if (justUpdated==PATCH_SERVER)
+  {
+    show_message("Failed to launch recently updated game files. Please be sure Stick Online is being run from a valid directory. See www.stick-online.com if the problem persists.");
+  }
+  downloadid=dl_begin(PATCH_SERVER+ds_list_find_value(updatedFileList,fileNum),
+    _temp+"\"+ds_list_find_value(updatedFileList,fileNum));
+  if (!downloadid)
+  {
+    show_message("Unable to connect to patch server");
+    downloading=false;
+    game_end();
+    exit;
+  }
+  else
+  {
+    downloading=true;
+  }
+}
+else
+{
+  downloading=false;
+}
